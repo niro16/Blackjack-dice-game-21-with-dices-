@@ -11,7 +11,7 @@ class Terning:
     def get_verdi(self):
         return self.__verdi
 
-class Spiller():
+class Spiller:
     def __init__(self, id, name, poengsum=0):
         self.id = id
         self.name = name
