@@ -43,10 +43,14 @@ class Tjueet:
         self.spillere = spillere
         self.terning = Terning()
         self.aktivespillere = []
-
+        
+        id=0
         for i in range(self.spillere):
-            en_spiller = lag_spiller(self.terning)
-            self.aktivespillere.append(en_spiller)
+            navn = input("Skriv navn på spiller: ")
+            poeng = 0
+            id += 1
+            spiller = Spiller(id, navn, poeng)
+            self.aktivespillere.append(spiller)
 
 
     def flere_omganger(self):
@@ -55,39 +59,50 @@ class Tjueet:
         for spiller in self.aktivespillere:
             while True:
                 print("{} har {} poeng".format(spiller.get_name(), spiller.get_poengsum()))
-                print("Vil {} kaste terningen en gang til?".format(spiller.get_name()))
+                print("Vil {} kaste terningen?".format(spiller.get_name()))
                 answer = input("(y/n)")
                 if answer == "y":
                     self.terning.kast()
                     ny_poengsum = spiller.get_poengsum() + self.terning.get_verdi()
-                    if ny_poengsum > 21:
-                        print("{} tapte, du fikk {}".format(spiller.get_name(), ny_poengsum))
-                        break
                     spiller.set_poengsum(ny_poengsum)
+                    if ny_poengsum > 21:
+                        print("{} er ute av spillet, du fikk {}".format(spiller.get_name(), ny_poengsum))
+                        print("\n\n\n")
+                        break
+                    elif ny_poengsum == 21:
+                        print("{} har oppnådd 21".format(spiller.get_name()))
+                        vinnere.append(spiller)
+                        print("\n\n\n")
+                        break
                 elif answer == "n":
                     print("Du fikk så mange poeng {}".format(spiller.get_poengsum()))
                     vinnere.append(spiller)
+                    print("\n\n\n")
                     break
                 else:
                     print("Tast enten 'y' eller 'n'")
-
-        for i in vinnere:
-            poeng.append(i.get_poengsum())
-        max_value = max(poeng)
-        info = poeng.index(max_value)
-
-        print("\nVinneren av spillet er: \n{} ".format(vinnere[info]))
-
-def lag_spiller(terning):
-    id = int(input("Skriv inn ID på spiller: "))
-    navn = input("Skriv navn på spiller: ")
-    poeng = 0
-    for i in range(3):
-        terning.kast()
-        poeng += terning.get_verdi()
-    spiller = Spiller(id, navn, poeng)
-    return spiller
-
+        
+        uavgjort = []
+        if len(vinnere) > 1: ########## Sjekk denne 
+            for i in vinnere:
+                poeng.append(i.get_poengsum())
+            max_value = max(poeng)
+            for j in range(len(vinnere)):
+                if vinnere[j].get_poengsum() == max_value:
+                    uavgjort.append(vinnere[j].get_name())
+            if uavgjort and len(uavgjort) > 1:
+                print("Uavgjort mellom spillerne: {}".format(uavgjort))
+            else:
+                info = poeng.index(max_value)
+                print("\nVinneren av spillet er: \n{} med {} poeng".format(vinnere[info].get_name(), vinnere[info].get_poengsum()))
+        elif len(vinnere) < 1:
+            print("Ingen vant! :(")
+        else:
+            for i in vinnere:
+                poeng.append(i.get_poengsum())
+            max_value = max(poeng)
+            info = poeng.index(max_value)
+            print("\nVinneren av spillet er: \n{} med {} poeng".format(vinnere[info].get_name(), vinnere[info].get_poengsum()))
 
 
 if __name__ == "__main__":
@@ -95,6 +110,11 @@ if __name__ == "__main__":
         try:
             nr_spillere = int(input("Skriv inn antall spillere: "))
             Tjueet(nr_spillere).flere_omganger()
-            break
+            print("Vil du/dere spille igjen?")
+            ans = input("(y/n)")
+            if ans == "y":
+                pass
+            elif ans == "n":
+                break
         except ValueError:
             print("Skriv inn et heltall!!")
