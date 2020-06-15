@@ -83,7 +83,7 @@ class Tjueet:
                     print("Tast enten 'y' eller 'n'")
         
         uavgjort = []
-        if len(vinnere) > 1: ########## Sjekk denne 
+        if len(vinnere) > 1: 
             for i in vinnere:
                 poeng.append(i.get_poengsum())
             max_value = max(poeng)
